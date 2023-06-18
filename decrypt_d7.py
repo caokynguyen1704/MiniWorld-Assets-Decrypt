@@ -32,23 +32,6 @@ async def decrypt_file(file_path: str) -> Union[None, Tuple[str, bytes]]:
     return file_path, out_data
 
 
-async def process_files(file_paths: AsyncGenerator[str, None]) -> None:
-    async for file_path in file_paths:
-        result = await decrypt_file(file_path)
-        if result is None:
-            loguru.logger.error(f"Decrypt failed for a file :(")
-        else:
-            file_path, out_data = result
-            dirs = os.path.join("decrypted", os.path.dirname(file_path))
-            os.makedirs(dirs, exist_ok=True)
-
-            output_file_path = os.path.join("decrypted", file_path)
-            with open(output_file_path, 'wb') as fp:
-                fp.write(out_data)
-
-            loguru.logger.success(f"{file_path} decrypt successfully!")
-
-
 async def main() -> None:
     if not os.path.exists("decrypted"):
         os.mkdir("decrypted")
